@@ -137,7 +137,7 @@ class Api_pcs extends REST_Controller {
                 "success" => false,
                 "message" => "Token Tidak Valid",
                 "error_code" => 1204,
-                "data" => bull
+                "data" => null
             );
             $this->response($data_json, REST_Controller::HTTP_OK);
             $this->output->_display();
@@ -152,7 +152,39 @@ class Api_pcs extends REST_Controller {
             "password" => md5($this->input->post("password"))
         );
 
-        $result => $this->M_admin->cekLoginAdmin($data);
+        $result = $this->M_admin->cekLoginAdmin($data);
+
+        if (empty($result)) {
+
+            $data_json= array(
+                "success" => false,
+                "message" => "Token Tidak Valid",
+                "error_code" => 1204,
+                "data" => null
+            );
+
+            $this->response($data_json, REST_Controller::HTTP_OK);
+            $this->output->_display();
+            exit();
+        }else {
+            $date = new Datetime();
+
+            $payload['id'] = $result['id'];
+            $payload['email'] = $result['email'];
+            $payload['iat'] = $date->getTimestamp();
+            $payload['exp'] = $date->getTimestamp() + 3600;
+
+            $data_json= array(
+                "success" => true,
+                "message" => "Otentikasi Berhasil",
+                "data" => array(
+                    "admin" => $result,
+                    "token" => JWT::encode($payload,$this->secret_key)
+                )
+            );
+
+        }
+        
     }
 
 

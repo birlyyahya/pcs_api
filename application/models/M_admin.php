@@ -35,7 +35,29 @@ class M_admin extends CI_Model {
 	function updateAdmin($data,$id)
 	{
 		$this->db->get_where('admin', array('id'=>$id));
-		return  $this->db->update($result,$data);
+		return  $this->db->update($data);
+
+	}
+	public function cekLoginAdmin($data)
+	{
+		$this->db->where($data);
+		$result = $this->db->get('admin');
+
+		return $result->row_array();
+	}
+	public function cekAdminExist($id)
+	{
+		$data = array(
+			"id" => $id
+		);
+
+		$this->db->where($data);
+		$result = $this->db->get('admin');
+
+		if (empty($result->row_array)) {
+			return false;
+		}
+		return true;
 
 	}
 
