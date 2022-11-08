@@ -180,6 +180,7 @@ class Api_pcs extends REST_Controller {
                 "data" => array(
                     "admin" => $result,
                     "token" => JWT::encode($payload,$this->secret_key)
+                    //ini adalah login post
                 )
             );
 
